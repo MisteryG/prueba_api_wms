@@ -71,7 +71,7 @@ app.post('/', (req, res) => {
 async function aPeticion(user, pass){
     let prueba;
     try {
-        prueba = await axios.post('http://localhost:3000/logueo', {user:user,pass:pass});
+        prueba = await axios.post('http://localhost:3100/logueo', {user:user,pass:pass});
         return prueba;
     } catch (error) {
         prueba = {
