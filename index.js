@@ -46,6 +46,8 @@ io.on('connection', socket => {
     })
 })
 
+// para logueo e impresion
+// de ticket
 function impTicket (ticket) {
     console.log("Funcion para imprimir ticket")
 }
