@@ -10,6 +10,7 @@ const axios = require ('axios')
 var users = {}
 
 //uso del socket
+//para kevin
 const io = socketIO(server)
 io.on('connection', socket => {
     var idConnect
@@ -36,8 +37,8 @@ io.on('connection', socket => {
             delete users[socket.id]
             console.log(`Usuario desconectado ${idConnect}`)
         })
-        socket.on('ticket', resp => {
-            console.log('ticket -> ',resp)
+        socket.on('response', resp => {
+            console.log('response -> ',resp)
             //verifica que el action sea de tipo respuesta
             if(resp.Action ==='ticket'){  
                 impTicket(resp) 
@@ -71,7 +72,7 @@ app.post('/', (req, res) => {
 async function aPeticion(user, pass){
     let prueba;
     try {
-        prueba = await axios.post('http://localhost:3000/logueo', {user:user,pass:pass});
+        prueba = await axios.post('http://localhost:3100/logueo', {user:user,pass:pass});
         return prueba;
     } catch (error) {
         prueba = {
