@@ -1,0 +1,16 @@
+{
+  "name": "p-api-wms",
+  "version": "1.0.0",
+  "description": "demo para api wms",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "Nodemon App.js"
+  },
+  "author": "alberto de la paz",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1",
+    "socket.io": "^2.2.0"
+  }
+}
