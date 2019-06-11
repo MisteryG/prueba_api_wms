@@ -55,15 +55,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', (req, res) => {
     if (req.body.action==="logueo") {
-        // let rValue=peticion(req.body.user,req.body.pass).then(console.log("Se logro la promesa"));
-        // if (rValue==="Correcto"){
-        //     res.send('Usuario logueado correctamente')
-        // } 
-        // let rValue = melleva2(req.body.user,req.body.pass);
-        // console.log(rValue);
         aPeticion(req.body.user,req.body.pass).then(
             function(result) {
-                if (result.data.valor==="Correcto") {
+                if (result.hasOwnProperty('codigo')){
+                    res.send(`${result.texto} ${result.codigo}`)
+                } else if (result.data.valor==="Correcto") {
                     res.send('Usuario logueado correctamente')
                 } else {
                     res.send(`Error de logueo ${result.data.valor}`)
@@ -73,8 +69,17 @@ app.post('/', (req, res) => {
 });
 
 async function aPeticion(user, pass){
-    let prueba = await axios.post('http://localhost:3000/logueo', {user:user,pass:pass});
-    return prueba;
+    let prueba;
+    try {
+        prueba = await axios.post('http://localhost:3000/logueo', {user:user,pass:pass});
+        return prueba;
+    } catch (error) {
+        prueba = {
+            codigo:error.code,
+            texto:"Error en la conexion con usuarios"
+        }
+        return prueba;
+    }
 }
 
 server.listen(3500,()=>{
