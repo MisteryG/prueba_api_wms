@@ -72,7 +72,7 @@ app.post('/', (req, res) => {
 async function aPeticion(user, pass){
     let prueba;
     try {
-        prueba = await axios.post('http://localhost:3100/logueo', {user:user,pass:pass});
+        prueba = await axios.post('http://192.168.1.99:3100/logueo', {user:user,pass:pass});
         return prueba;
     } catch (error) {
         prueba = {
@@ -83,6 +83,6 @@ async function aPeticion(user, pass){
     }
 }
 
-server.listen(3500,()=>{
+server.listen(3100,()=>{
     console.log('Node app is running on port 3500')
 });
