@@ -13,6 +13,11 @@ var users = {}
 //para kevin
 const io = socketIO(server)
 io.on('connection', socket => {
+
+    setInterval(function () {
+            socket.emit('messages', 'holi')
+    }, 1000); 
+
     var idConnect
     socket.on('connected', datos => {
         idConnect= datos.Usuario
@@ -37,12 +42,13 @@ io.on('connection', socket => {
             delete users[socket.id]
             console.log(`Usuario desconectado ${idConnect}`)
         })
+
         socket.on('response', resp => {
             console.log('response -> ',resp)
             //verifica que el action sea de tipo respuesta
             if(resp.Action ==='ticket'){  
                 impTicket(resp) 
-            }
+            }              
         })
     })
 })
@@ -84,5 +90,5 @@ async function aPeticion(user, pass){
 }
 
 server.listen(3100,()=>{
-    console.log('Node app is running on port 3500')
+    console.log('Node app is running on port 3100')
 });
