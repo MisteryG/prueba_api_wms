@@ -13,10 +13,15 @@ var users = {}
 //para kevin
 const io = socketIO(server)
 io.on('connection', socket => {
-
-    setInterval(function () {
-            socket.emit('messages', 'holi')
-    }, 1000); 
+    // let sendObject = {
+    //     action:"Imprimir",
+    //     id_user:"prueba",
+    //     id_HH:1234,
+    //     ticket:123456789
+    // }
+    // setInterval(function () {
+    //         socket.emit('messages', sendObject)
+    // }, 1000); 
 
     var idConnect
     socket.on('connected', datos => {
@@ -62,7 +67,7 @@ function impTicket (ticket) {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/', (req, res) => {
+app.post('/logueo', (req, res) => {
     if (req.body.action==="logueo") {
         aPeticion(req.body.user,req.body.pass).then(
             function(result) {
@@ -74,6 +79,28 @@ app.post('/', (req, res) => {
                     res.send(`Error de logueo ${result.data.valor}`)
                 }
         });
+    }
+});
+
+app.post('/ticket', (req, res) => {
+    if (req.body.action==='imprimir') {
+        let sendObject = {
+            action:req.body.action,
+            id_user:req.body.id_user,
+            id_HH:req.body.id_HH,
+            ticket:req.body.ticket
+        }
+        io.emit("messages", sendObject);
+        res.send('Ticket enviado')
+    } else {
+        let sendObject = {
+            action:"",
+            id_user:"",
+            id_HH:"",
+            ticket:""
+        }
+        io.emit("messages", sendObject);
+        res.send('No es para nadie')
     }
 });
 
