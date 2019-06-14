@@ -79,35 +79,31 @@ app.post('/logueo', (req, res) => {
                     res.send(`Error de logueo ${result.data.valor}`)
                 }
         });
+    } else {
+        res.send('Sin palabra clave')
     }
 });
 
 app.post('/ticket', (req, res) => {
-    if (req.body.action==='imprimir') {
-        let sendObject = {
-            action:req.body.action,
-            id_user:req.body.id_user,
-            id_HH:req.body.id_HH,
-            ticket:req.body.ticket
+    let verificacion = req.body
+    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')) {
+        if (verificacion.action==='imprimir') {
+            io.emit("messages", verificacion);
+            res.send('Ticket enviado')
+        } else {
+            io.emit("messages", verificacion);
+            res.send('No es para nadie')
         }
-        io.emit("messages", sendObject);
-        res.send('Ticket enviado')
     } else {
-        let sendObject = {
-            action:"",
-            id_user:"",
-            id_HH:"",
-            ticket:""
-        }
-        io.emit("messages", sendObject);
-        res.send('No es para nadie')
+        io.emit("messages", verificacion);
+        res.send('El objeto no cotiene propiedades validas')
     }
 });
 
 async function aPeticion(user, pass){
     let prueba;
     try {
-        prueba = await axios.post('http://192.168.1.99:3100/logueo', {user:user,pass:pass});
+        prueba = await axios.post('http://192.168.1.99:3200', {user:user,pass:pass});
         return prueba;
     } catch (error) {
         prueba = {
