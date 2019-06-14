@@ -9,19 +9,8 @@ const axios = require ('axios')
 
 var users = {}
 
-//uso del socket
-//para kevin
 const io = socketIO(server)
 io.on('connection', socket => {
-    // let sendObject = {
-    //     action:"Imprimir",
-    //     id_user:"prueba",
-    //     id_HH:1234,
-    //     ticket:123456789
-    // }
-    // setInterval(function () {
-    //         socket.emit('messages', sendObject)
-    // }, 1000); 
 
     var idConnect
     socket.on('connected', datos => {
@@ -48,21 +37,8 @@ io.on('connection', socket => {
             console.log(`Usuario desconectado ${idConnect}`)
         })
 
-        socket.on('response', resp => {
-            console.log('response -> ',resp)
-            //verifica que el action sea de tipo respuesta
-            if(resp.Action ==='ticket'){  
-                impTicket(resp) 
-            }              
-        })
     })
 })
-
-// para logueo e impresion
-// de ticket
-function impTicket (ticket) {
-    console.log("Funcion para imprimir ticket")
-}
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -87,16 +63,17 @@ app.post('/logueo', (req, res) => {
 app.post('/ticket', (req, res) => {
     let verificacion = req.body
     if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')) {
+        verificacion.LP=verificacion.LP.toUpperCase()
         if (verificacion.action==='imprimir') {
             io.emit("messages", verificacion);
-            res.send('Ticket enviado')
+            res.send('Ticket enviado '+JSON.stringify(verificacion))
         } else {
             io.emit("messages", verificacion);
-            res.send('No es para nadie')
+            res.send('No es para nadie '+JSON.stringify(verificacion))
         }
     } else {
         io.emit("messages", verificacion);
-        res.send('El objeto no cotiene propiedades validas')
+        res.send('El objeto no contiene propiedades validas '+JSON.stringify(verificacion))
     }
 });
 
