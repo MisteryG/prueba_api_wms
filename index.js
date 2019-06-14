@@ -9,9 +9,9 @@ const axios = require ('axios')
 
 var users = {}
 
-//uso del socket
 const io = socketIO(server)
 io.on('connection', socket => {
+
     var idConnect
     socket.on('connected', datos => {
         idConnect= datos.Usuario
@@ -36,24 +36,14 @@ io.on('connection', socket => {
             delete users[socket.id]
             console.log(`Usuario desconectado ${idConnect}`)
         })
-        socket.on('ticket', resp => {
-            console.log('ticket -> ',resp)
-            //verifica que el action sea de tipo respuesta
-            if(resp.Action ==='ticket'){  
-                impTicket(resp) 
-            }
-        })
+
     })
 })
-
-function impTicket (ticket) {
-    console.log("Funcion para imprimir ticket")
-}
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/', (req, res) => {
+app.post('/logueo', (req, res) => {
     if (req.body.action==="logueo") {
         aPeticion(req.body.user,req.body.pass).then(
             function(result) {
@@ -65,13 +55,32 @@ app.post('/', (req, res) => {
                     res.send(`Error de logueo ${result.data.valor}`)
                 }
         });
+    } else {
+        res.send('Sin palabra clave')
+    }
+});
+
+app.post('/ticket', (req, res) => {
+    let verificacion = req.body
+    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')) {
+        verificacion.LP=verificacion.LP.toUpperCase()
+        if (verificacion.action==='imprimir') {
+            io.emit("messages", verificacion);
+            res.send('Ticket enviado '+JSON.stringify(verificacion))
+        } else {
+            io.emit("messages", verificacion);
+            res.send('No es para nadie '+JSON.stringify(verificacion))
+        }
+    } else {
+        io.emit("messages", verificacion);
+        res.send('El objeto no contiene propiedades validas '+JSON.stringify(verificacion))
     }
 });
 
 async function aPeticion(user, pass){
     let prueba;
     try {
-        prueba = await axios.post('http://localhost:3100/logueo', {user:user,pass:pass});
+        prueba = await axios.post('http://192.168.1.99:3200', {user:user,pass:pass});
         return prueba;
     } catch (error) {
         prueba = {
@@ -82,6 +91,6 @@ async function aPeticion(user, pass){
     }
 }
 
-server.listen(3500,()=>{
-    console.log('Node app is running on port 3500')
+server.listen(3100,()=>{
+    console.log('Node app is running on port 3100')
 });
