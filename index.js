@@ -62,7 +62,7 @@ app.post('/logueo', (req, res) => {
 
 app.post('/ticket', (req, res) => {
     let verificacion = req.body
-    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')) {
+    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')&&verificacion.hasOwnProperty('LP')) {
         verificacion.LP=verificacion.LP.toUpperCase()
         if (verificacion.action==='imprimir') {
             io.emit("messages", verificacion);
