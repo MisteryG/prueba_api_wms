@@ -11,10 +11,6 @@ var users = {}
 
 const io = socketIO(server)
 
-io.on('connection', socket => {
-
-    console.log("Usuario conectado")
-    
     var idConnect
     socket.on('connected', datos => {
         idConnect= datos.Usuario
@@ -41,7 +37,6 @@ io.on('connection', socket => {
         })
 
     })
-})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -65,7 +60,7 @@ app.post('/logueo', (req, res) => {
 
 app.post('/ticket', (req, res) => {
     let verificacion = req.body
-    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')&&verificacion.hasOwnProperty('LP')) {
+    if (verificacion.hasOwnProperty('action')&&verificacion.hasOwnProperty('UserId')&&verificacion.hasOwnProperty('DeviceId')) {
         verificacion.LP=verificacion.LP.toUpperCase()
         if (verificacion.action==='imprimir') {
             io.emit("messages", verificacion);
