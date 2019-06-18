@@ -4,7 +4,8 @@
   "description": "demo para api wms",
   "main": "index.js",
   "scripts": {
-    "start-dev": "Nodemon App.js"
+    "start-dev": "Nodemon App.js",
+    "start": "node index.js"
   },
   "author": "alberto de la paz",
   "license": "ISC",

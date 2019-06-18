@@ -114,6 +114,6 @@ async function aPeticion(user, pass){
     }
 }
 
-server.listen(3100,()=>{
-    console.log('Node app is running on port 3100')
+server.listen(8080,()=>{
+    console.log('Node app is running on port 8080')
 });
