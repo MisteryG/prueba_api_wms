@@ -7,40 +7,60 @@ const app = asyncify(express())
 const server = http.createServer(app)
 const axios = require ('axios')
 
-var users = {}
+var users = []
 
 const io = socketIO(server)
 
 io.on('connection', socket => {
 
-    console.log("Usuario conectado")
-    
-    var idConnect
-    socket.on('connected', datos => {
-        idConnect= datos.Usuario
-        console.log(`Usuario intenta conexión ${idConnect}`)
-        if(Object.entries(users).length != 0){
-            if(Object.values(users).indexOf(idConnect) >-1){
-                console.log("Error el usuario ya esta conectado")
-                const obj ={
-                    id:idConnect,
-                    error: '00x100'
-                }
-                io.to(socket.id).emit("messages", obj)
-            }else{
-                users[socket.id]= datos.usuario
-                console.log(`Usuario conectado ${idConnect}`)
-            }
-        } else {
-            console.log(`Usuario conectado ${idConnect}`)
-            users[socket.id]= datos.TerminalId
-        }
-        socket.on('disconnect', function() {
-            delete users[socket.id]
-            console.log(`Usuario desconectado ${idConnect}`)
-        })
+  var idConnect
+  socket.on('connected', datos => {
 
-    })
+    idConnect= datos.DeviceId
+    if(users.length != 0){
+      const resultado = users.find( data => 
+         (data.DeviceId === datos.DeviceId) && (data.UserId === datos.UserId))
+      if(!resultado){
+        console.log(`[user connected] ${idConnect}`)
+        datos.socketID=socket.id
+        users.push(datos)
+        const obj ={
+          action: 'login',
+          reponse: 'success'
+        }
+        io.to(socket.id).emit("messages", obj)
+        // console.log(`[users]` , users)
+
+      }else{
+        const obj = {
+          action: 'login',
+          reponse: 'error',
+          error: '00x100'
+        }
+        io.to(socket.id).emit("messages", obj)
+      }
+    }else{
+      console.log(`[user connected] ${idConnect}`)
+      datos.socketID=socket.id
+      users.push(datos)
+      const obj ={
+        action: 'login',
+        reponse: 'success'
+      }
+      io.to(socket.id).emit("messages", obj)
+      // console.log(`[users]` , users)
+    }
+    
+  })
+
+  socket.on('disconnect', function() {
+      users.findIndex((data, x)=>{
+        if(data.socketID === socket.id)
+           users.splice(x,1)
+      })
+      // console.log('______ users ______  ', users)
+      // console.log(`Usuario desconectado ${idConnect}`)
+  })
 })
 
 app.use(bodyParser.json())
