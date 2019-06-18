@@ -10,8 +10,11 @@ const axios = require ('axios')
 var users = {}
 
 const io = socketIO(server)
+
 io.on('connection', socket => {
 
+    console.log("Usuario conectado")
+    
     var idConnect
     socket.on('connected', datos => {
         idConnect= datos.Usuario
