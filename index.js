@@ -26,15 +26,14 @@ io.on('connection', socket => {
         users.push(datos)
         const obj ={
           action: 'login',
-          reponse: 'success'
+          response: 'success'
         }
         io.to(socket.id).emit("messages", obj)
-        // console.log(`[users]` , users)
 
       }else{
         const obj = {
           action: 'login',
-          reponse: 'error',
+          response: 'error',
           error: '00x100'
         }
         io.to(socket.id).emit("messages", obj)
@@ -45,7 +44,7 @@ io.on('connection', socket => {
       users.push(datos)
       const obj ={
         action: 'login',
-        reponse: 'success'
+        response: 'success'
       }
       io.to(socket.id).emit("messages", obj)
       // console.log(`[users]` , users)
