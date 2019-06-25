@@ -15,50 +15,54 @@ io.on('connection', socket => {
 
   var idConnect
   socket.on('connected', datos => {
+    try{
+        idConnect= datos.DeviceId
+        if(users.length != 0){
+          const resultado = users.find( data => 
+            (data.DeviceId === datos.DeviceId) && (data.UserId === datos.UserId))
+          if(!resultado){
+            console.log(`[user connected] ${idConnect}`)
+            datos.socketID=socket.id
+            users.push(datos)
+            const obj ={
+              action: 'login',
+              response: 'success'
+            }
+            // console.log(JSON.stringify(datos))
+            io.to(socket.id).emit("messages", obj)
 
-    idConnect= datos.DeviceId
-    if(users.length != 0){
-      const resultado = users.find( data => 
-         (data.DeviceId === datos.DeviceId) && (data.UserId === datos.UserId))
-      if(!resultado){
-        console.log(`[user connected] ${idConnect}`)
-        datos.socketID=socket.id
-        users.push(datos)
-        const obj ={
-          action: 'login',
-          response: 'success'
+          }else{
+            const obj = {
+              action: 'login',
+              response: 'error',
+              error: '00x100'
+            }
+            io.to(socket.id).emit("messages", obj)
+          }
+        }else{
+          console.log(`[user connected] ${idConnect}`)
+          // console.log(JSON.stringify(datos))
+          datos.socketID=socket.id
+          users.push(datos)
+          const obj ={
+            action: 'login',
+            response: 'success'
+          }
+          io.to(socket.id).emit("messages", obj)
+          // console.log(`[users]` , users)
         }
-        io.to(socket.id).emit("messages", obj)
-
-      }else{
-        const obj = {
-          action: 'login',
-          response: 'error',
-          error: '00x100'
-        }
-        io.to(socket.id).emit("messages", obj)
-      }
-    }else{
-      console.log(`[user connected] ${idConnect}`)
-      datos.socketID=socket.id
-      users.push(datos)
-      const obj ={
-        action: 'login',
-        response: 'success'
-      }
-      io.to(socket.id).emit("messages", obj)
-      // console.log(`[users]` , users)
+    }catch(e){
+      console.log('| ocurrio un error |', e)
     }
     
   })
 
   socket.on('disconnect', function() {
-      users.findIndex((data, x)=>{
-        if(data.socketID === socket.id)
-           users.splice(x,1)
-      })
-      // console.log('______ users ______  ', users)
-      // console.log(`Usuario desconectado ${idConnect}`)
+      let finded = users.findIndex((data)=>data.socketID == socket.id)
+      if(finded != -1){
+        users.splice(finded,1)
+        console.log('[usuario desconectado]', idConnect)
+      }
   })
 })
 
