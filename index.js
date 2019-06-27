@@ -6,6 +6,7 @@ const socketIO = require('socket.io')
 const app = asyncify(express())
 const server = http.createServer(app)
 const axios = require ('axios')
+const cors = require('cors')
 
 var users = []
 
@@ -66,7 +67,8 @@ io.on('connection', socket => {
   })
 })
 
-app.use(bodyParser.json())
+app.use(cors);
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/logueo', (req, res) => {
