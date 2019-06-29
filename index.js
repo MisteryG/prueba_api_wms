@@ -67,26 +67,9 @@ io.on('connection', socket => {
   })
 })
 
-app.use(cors);
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post('/logueo', (req, res) => {
-    if (req.body.action==="logueo") {
-        aPeticion(req.body.user,req.body.pass).then(
-            function(result) {
-                if (result.hasOwnProperty('codigo')){
-                    res.send(`${result.texto} ${result.codigo}`)
-                } else if (result.data.valor==="Correcto") {
-                    res.send('Usuario logueado correctamente')
-                } else {
-                    res.send(`Error de logueo ${result.data.valor}`)
-                }
-        });
-    } else {
-        res.send('Sin palabra clave')
-    }
-});
 
 app.post('/ticket', (req, res) => {
     let verificacion = req.body
@@ -104,20 +87,6 @@ app.post('/ticket', (req, res) => {
         res.send('El objeto no contiene propiedades validas '+JSON.stringify(verificacion))
     }
 });
-
-async function aPeticion(user, pass){
-    let prueba;
-    try {
-        prueba = await axios.post('http://192.168.1.99:3200', {user:user,pass:pass});
-        return prueba;
-    } catch (error) {
-        prueba = {
-            codigo:error.code,
-            texto:"Error en la conexion con usuarios"
-        }
-        return prueba;
-    }
-}
 
 server.listen(8080,()=>{
     console.log('Node app is running on port 8080')
